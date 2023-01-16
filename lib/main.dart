@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'congrats_ui.dart';
 import 'core/configurations/aws_config.dart';
+import 'core/navigator/route_helper.dart';
 
 const String appName = "Amplify flutter auth";
 void main() async {
@@ -53,18 +55,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     .signInWithAws(AuthType.facebook);
                 if (result != null) {
                   // ignore: use_build_context_synchronously
-                  Navigator.push(
+                  WidgetRouteHelper.navigateToRemoveAll(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const Scaffold(
-                                body: Center(
-                                    child: Text("Sign in with facebook")),
-                              )));
+                      const CongratsUI(
+                          authType: AuthType.facebook, signInMode: "facebook"));
                 } else {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) =>
-                          const Text("Cannot sign in with facebook"));
+                  // ignore: use_build_context_synchronously
+                  WidgetRouteHelper.showButtomSheetInApp(
+                      context, "Cannot sign in with facebook");
                 }
               },
               child: const Text("Sign In with facebook"),
@@ -75,18 +73,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     .signInWithAws(AuthType.goggle);
                 if (result != null) {
                   // ignore: use_build_context_synchronously
-                  Navigator.push(
+                  WidgetRouteHelper.navigateToRemoveAll(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const Scaffold(
-                                body:
-                                    Center(child: Text("Sign in with Amazon")),
-                              )));
+                      const CongratsUI(
+                          authType: AuthType.goggle, signInMode: "Google"));
                 } else {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) =>
-                          const Text("Cannot sign in with Amazon"));
+                  // ignore: use_build_context_synchronously
+                  WidgetRouteHelper.showButtomSheetInApp(
+                      context, "Cannot sign in with Google");
                 }
               },
               child: const Text("Sign In with Google"),
@@ -97,32 +91,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     .signInWithAws(AuthType.amazon);
                 if (result != null) {
                   // ignore: use_build_context_synchronously
-                  Navigator.push(
+                  WidgetRouteHelper.navigateToRemoveAll(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const Scaffold(
-                                body:
-                                    Center(child: Text("Sign in with Amazon")),
-                              )));
+                      const CongratsUI(
+                          authType: AuthType.amazon, signInMode: "Amazon"));
                 } else {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) =>
-                          const Text("Cannot sign in with Amazon"));
+                  // ignore: use_build_context_synchronously
+                  WidgetRouteHelper.showButtomSheetInApp(
+                      context, "Cannot sign in with amazon");
                 }
               },
               child: const Text("Sign In with Amazon"),
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("Sign In with Apple"),
-            ),
-            // TextButton(
-            //   onPressed: () {
-            //     AwsInAppConfig.instance.signOutWithAws();
-            //   },
-            //   child: const Text("Sign out"),
-            // ),
           ],
         ),
       ),
