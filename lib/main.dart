@@ -14,6 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
   AwsInAppConfig.instance.addInAppPlugin();
+
   runApp(const MyApp());
 }
 
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.black,
       ),
-      home:  MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }

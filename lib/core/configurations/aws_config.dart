@@ -66,9 +66,7 @@ class AwsInAppConfig {
   //sign in with facebook
   Future<void> signOutWithAws() async {
     try {
-      final SignOutResult result = await Amplify.Auth.signOut(
-          options: const SignOutOptions(globalSignOut: false));
-      print('Result: ${result.toString()}');
+      await Amplify.Auth.signOut();
     } on AmplifyException catch (e) {
       print("Amplify exception ${e.underlyingException}");
     }

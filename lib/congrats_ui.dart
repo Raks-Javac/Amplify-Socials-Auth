@@ -16,12 +16,13 @@ class CongratsUI extends StatefulWidget {
 }
 
 class _CongratsUIState extends State<CongratsUI> {
-  late ConfettiController _confettiController;
+  final ConfettiController _confettiController =
+      ConfettiController(duration: const Duration(seconds: 20));
 
   @override
   void initState() {
-    _confettiController =
-        ConfettiController(duration: const Duration(seconds: 4));
+    // _confettiController =
+    //     ConfettiController(duration: const Duration(seconds: 20));
     super.initState();
   }
 
@@ -33,6 +34,7 @@ class _CongratsUIState extends State<CongratsUI> {
         title: const Text("Dashboard"),
       ),
       body: ConfettiWidget(
+        shouldLoop: true,
         blastDirectionality: BlastDirectionality.explosive,
         confettiController: _confettiController,
         child: Center(
