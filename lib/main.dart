@@ -5,7 +5,11 @@ import 'congrats_ui.dart';
 import 'core/configurations/aws_config.dart';
 import 'core/navigator/route_helper.dart';
 
+const String facebookLogoPath = "images/facebook_logo.png";
+const String googleLogoPath = "images/google_logo.png";
+const String amazonLogoPath = "images/amazon_logo.png";
 const String appName = "Amplify flutter auth";
+TextStyle generalStyle = const TextStyle();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
@@ -20,20 +24,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: appName,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.black,
       ),
-      home: const MyHomePage(title: appName),
+      home:  MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -41,34 +42,37 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        backgroundColor: theme.primaryColor,
+        title: const Text(appName),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextButton(
-              onPressed: () async {
-                final result = await AwsInAppConfig.instance
-                    .signInWithAws(AuthType.facebook);
-                if (result != null) {
-                  // ignore: use_build_context_synchronously
-                  WidgetRouteHelper.navigateToRemoveAll(
-                      context,
-                      const CongratsUI(
-                          authType: AuthType.facebook, signInMode: "facebook"));
-                } else {
-                  // ignore: use_build_context_synchronously
-                  WidgetRouteHelper.showButtomSheetInApp(
-                      context, "Cannot sign in with facebook");
-                }
-              },
-              child: const Text("Sign In with facebook"),
-            ),
-            TextButton(
-              onPressed: () async {
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ButtonReuse(facebookLogoPath, () async {
+                AwsInAppConfig.instance
+                    .signInWithAws(AuthType.facebook)!
+                    .then((result) {
+                  if (result != null) {
+                    // ignore: use_build_context_synchronously
+                    WidgetRouteHelper.navigateToRemoveAll(
+                        context,
+                        const CongratsUI(
+                            authType: AuthType.facebook,
+                            signInMode: "facebook"));
+                  } else {
+                    // ignore: use_build_context_synchronously
+                    WidgetRouteHelper.showButtomSheetInApp(
+                        context, "Cannot sign in with facebook");
+                  }
+                });
+              }),
+              ButtonReuse(googleLogoPath, () async {
                 final result = await AwsInAppConfig.instance
                     .signInWithAws(AuthType.goggle);
                 if (result != null) {
@@ -82,11 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   WidgetRouteHelper.showButtomSheetInApp(
                       context, "Cannot sign in with Google");
                 }
-              },
-              child: const Text("Sign In with Google"),
-            ),
-            TextButton(
-              onPressed: () async {
+              }),
+              ButtonReuse(amazonLogoPath, () async {
                 final result = await AwsInAppConfig.instance
                     .signInWithAws(AuthType.amazon);
                 if (result != null) {
@@ -100,13 +101,53 @@ class _MyHomePageState extends State<MyHomePage> {
                   WidgetRouteHelper.showButtomSheetInApp(
                       context, "Cannot sign in with amazon");
                 }
-              },
-              child: const Text("Sign In with Amazon"),
+              })
+            ],
+          ),
+        ),
+      ),
+      // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class ButtonReuse extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String iconPath;
+  const ButtonReuse(this.iconPath, this.onPressed, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return TextButton(
+      onPressed: () async {
+        onPressed();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: theme.primaryColor,
+          ),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Sign In with",
+              style: generalStyle.copyWith(color: theme.primaryColor),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Image.asset(
+              iconPath,
+              width: 30,
+              height: 50,
             ),
           ],
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

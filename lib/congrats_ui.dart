@@ -2,6 +2,8 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 import 'core/configurations/aws_config.dart';
+import 'core/navigator/route_helper.dart';
+import 'main.dart';
 
 class CongratsUI extends StatefulWidget {
   final String signInMode;
@@ -25,12 +27,17 @@ class _CongratsUIState extends State<CongratsUI> {
 
   @override
   Widget build(BuildContext context) {
-    return ConfettiWidget(
-      blastDirectionality: BlastDirectionality.explosive,
-      confettiController: _confettiController,
-      child: Scaffold(
-        body: Center(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text("Dashboard"),
+      ),
+      body: ConfettiWidget(
+        blastDirectionality: BlastDirectionality.explosive,
+        confettiController: _confettiController,
+        child: Center(
             child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
                 "Congratulations you've just logged in with ${widget.signInMode}"),
@@ -38,8 +45,11 @@ class _CongratsUIState extends State<CongratsUI> {
               height: 20,
             ),
             TextButton(
-              onPressed: () {
-                AwsInAppConfig.instance.signOutWithAws();
+              onPressed: () async {
+                await AwsInAppConfig.instance.signOutWithAws();
+                if (mounted) {
+                  WidgetRouteHelper.navigateToRemoveAll(context, MyHomePage());
+                }
               },
               child: const Text("Sign out"),
             ),
